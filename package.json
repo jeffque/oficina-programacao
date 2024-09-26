@@ -6,7 +6,7 @@
   "scripts": {
     "generate-sources": "node tools/create-env.js generated-sources/base-env.ts",
     "dev": "npm run generate-sources      && vite",
-    "build": "npm run generate-sources    && tsc -b && vite build",
+    "build": "npm run generate-sources    && vite build",
     "lint": "npm run generate-sources     && eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "npm run generate-sources  && vite preview"
   },
