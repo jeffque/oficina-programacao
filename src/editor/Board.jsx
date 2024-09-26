@@ -1,7 +1,9 @@
 import React, { useEffect } from "react";
 import styles from "./Board.module.css"
+import { useEditor } from "./EditorContext";
 
 const TARTARUGA = "🐢"
+const APPLE = "🍎"
 
 let RUNNING = false
 
@@ -14,25 +16,23 @@ const vetorDimensoes = () => {
     return linhas
 }
 
-const MeuTd = ({x,y, tartarugaInicial}) => {
-    console.log(`em MeuTd tartaruga x ${tartarugaInicial.x} y ${tartarugaInicial.y}/ x ${x} y ${y}`)
-    const posicaoInicial = x == tartarugaInicial.x && y == tartarugaInicial.y
+const MeuTd = ({x,y }) => {
+  const [{ tartaruga, apple }] = useEditor()
 
-    console.log(`posicaoInicial? ${posicaoInicial}`)
-    if (posicaoInicial) {
-        return <td data-pos={`${x}/${y}`} data-giro={tartarugaInicial.giro}>{TARTARUGA}</td>
-    } else {
-        return <td data-pos={`${x}/${y}`}></td>
-    }
+  const posicaoInicialTartaruga = x === tartaruga.x && y === tartaruga.y
+  const posicaoInicialApple = x === apple.x && y === apple.y
+
+  if (posicaoInicialTartaruga) return <td data-pos={`${x}/${y}`} data-giro={tartaruga.giro}>{TARTARUGA}</td>
+  else if (posicaoInicialApple) return <td data-pos={`${x}/${y}`} data-giro={tartaruga.giro}>{APPLE}</td>
+  else return <td data-pos={`${x}/${y}`}></td>
 }
 
-const MeuTr = ({y, tartarugaInicial}) => {
-    console.log(`em MeuTr ${tartarugaInicial}`)
+const MeuTr = ({ y }) => {
     const colunas = vetorDimensoes()
 
     return <>
         <tr>
-            { colunas.map((i) => <MeuTd key={i} y={y} x={i} tartarugaInicial={tartarugaInicial}/>) }
+            {colunas.map((i) => <MeuTd key={i} y={y} x={i} />) }
         </tr>
     </>
 }
