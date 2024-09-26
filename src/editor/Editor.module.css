@@ -1,0 +1,16 @@
+.oh_o_meio {
+    margin: 10px;
+}
+
+.editorMonaco {
+    min-height: 600px;
+    min-width: 240dvh;
+}
+
+.hidden {
+    display: none;
+}
+
+.ali_esquerda {
+    float: left;
+}
