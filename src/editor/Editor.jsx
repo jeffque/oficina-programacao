@@ -153,6 +153,7 @@ export const Editor = () => {
 	
 	useEffect(() => {
 		if (monacoEl) {
+			console.log(buildGame({ tartarugaIni: tartarugaInicial(), tabuleiroIni: {max_rows: 10, max_lines: 10} }))
 			setEditor((editor) => {
 				if (editor) return editor;
 
