@@ -14,3 +14,7 @@
 .ali_esquerda {
     float: left;
 }
+
+.greyButton {
+    background-color: #5a5a5a;
+}

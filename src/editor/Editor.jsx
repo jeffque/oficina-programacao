@@ -17,6 +17,20 @@ function tartarugaInicial() {
 	return {x:3, y:3, giro: "DIREITA"}
 }
 
+const pomoInicial = (() => {
+	const tini = tartarugaInicial()
+	let xl, yl
+	do {
+		xl = Math.floor(Math.random()*10)
+		yl = Math.floor(Math.random()*10)
+	} while (xl == tini.x && yl == tini.y)
+	const x = xl
+	const y = yl
+
+	console.log(`criando o pomo inicial... x ${x} y ${y}`)
+	return () => ({x, y})
+})()
+
 function giro_valido(giro) {
 	if (typeof giro != 'number') {
 		return false
@@ -24,18 +38,17 @@ function giro_valido(giro) {
 	return 0 <= giro && giro < 4
 }
 
-function buildGame({tartarugaIni, tabuleiroIni }) {
+function buildGame({tartarugaIni, pomoIni }) {
 	let tartaruga = {...tartarugaIni}
-	let tabuleiro = {...tabuleiroIni}
+	let pomo = {...pomoIni}
 
 	const rumos = ["DIREITA", "CIMA", "ESQUERDA", "BAIXO"]
 	const deltas = [{x: 1, y: 0}, {x: 0, y: 1}, {x: -1, y: 0}, {x: 0, y: -1}]
 	const eventos = []
 	function adicionaEvento() {
-		eventos.push({tartaruga: {...tartaruga}, tabuleiro: {...tabuleiro}})
+		eventos.push({tartaruga: {...tartaruga}})
 	}
 
-	tartaruga.tabuleiro = tabuleiro
 	if (!tartaruga.hasOwnProperty("giro_pos")) {
 		if (tartaruga.hasOwnProperty("giro")) {
 			tartaruga.giro_pos = rumos.indexOf(tartaruga.giro)
@@ -68,7 +81,7 @@ function buildGame({tartarugaIni, tabuleiroIni }) {
 		adicionaEvento()
 	}
 
-	return {tartaruga, tabuleiro, eventos}
+	return {tartaruga, pomo, eventos}
 }
 
 /*
@@ -95,7 +108,7 @@ console.log(tartaruga)
 
 const base = `
 ( () => {
-	const {tartaruga, tabuleiro, eventos} = buildGame({ tartarugaIni: tartarugaInicial(), tabuleiroIni: {max_rows: 10, max_lines: 10} });
+	const {tartaruga, pomo, eventos} = buildGame({ tartarugaIni: tartarugaInicial(), pomoIni: pomoInicial() });
 
 	{
 		const eventos = undefined;
@@ -115,6 +128,16 @@ function getValorEditor() {
 	if (!!locallyStoredValue) return locallyStoredValue
 
 	return `
+	/*
+	const tartaruga: {
+		x: number,
+		y: number,
+		frente: function() => void
+		girar_esquerda: function() => void
+		girar_direita: function() => void
+	}
+	const pomo: {x: number, y: number}
+	*/ 
 	const passos = [1, 2, 3, 4]
 	for (const passo of passos) {
 		tartaruga.frente()
@@ -153,7 +176,7 @@ export const Editor = () => {
 	
 	useEffect(() => {
 		if (monacoEl) {
-			console.log(buildGame({ tartarugaIni: tartarugaInicial(), tabuleiroIni: {max_rows: 10, max_lines: 10} }))
+			console.log(buildGame({ tartarugaIni: tartarugaInicial(), pomoIni: pomoInicial() }))
 			setEditor((editor) => {
 				if (editor) return editor;
 
@@ -194,13 +217,12 @@ export const Editor = () => {
 		}
 	}
 
-	return <>
-	<Board tartarugaInicial={tartarugaInicial()} />
-	<button onClick={click} className={`${styles.ali_esquerda} ${styles.oh_o_meio}`}>Executar o programa</button>
+	return <div>
+	<Board tartarugaInicial={tartarugaInicial()} pomoInicial={pomoInicial()} />
+	<button onClick={click} className={`${styles.ali_esquerda} ${styles.oh_o_meio} ${styles.greyButton}`}>Executar o programa</button>
     <div className={styles.ali_esquerda}>
       <div id="editor" ref={monacoEl} className={styles.raiz_editor + " " + styles.editorMonaco}></div>
     </div>
-	
-    </>;
+    </div>;
 };
 
